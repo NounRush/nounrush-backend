@@ -20,6 +20,14 @@ const UserSchema = new mongoose.Schema({
     isInGame: {
         type: Boolean,
         default: false
+    },
+    verificationToken: {
+        type: String,
+        default: null
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     }
 }, {
     collection: "users",

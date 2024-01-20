@@ -3,7 +3,7 @@ import { ErrorHandler } from "./middleware/error";
 import cors from "cors";
 import { config } from "dotenv";
 import database from "./utils/database/db";
-
+import AuthRouter from "./modules/auth/auth.routes";
 config();
 
 const app = express();
@@ -15,6 +15,7 @@ app.use(cors());
 database.connect();
 
 // Add routes here
+app.use("/auth", AuthRouter);
 
 app.use('*', ErrorHandler.pagenotFound());
 app.use(ErrorHandler.handle());

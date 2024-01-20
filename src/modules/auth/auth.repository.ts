@@ -11,6 +11,26 @@ export default class AuthRepository {
         return User.findById(id).select("password");
     }
 
+    async updateVerificationToken(id: string, verificationToken: string) {
+        return User.updateOne({ _id: id }, { verificationToken });  
+    }
+
+    async updatePassword(id: string, password: string) {
+        return User.updateOne({ _id: id }, { password });
+    }
+
+    async setIsVerified(id: string, isVerified: boolean) {
+        return User.updateOne({ _id: id }, { isVerified });
+    }
+
+    async revokeVerificationToken(id: string) {
+        return User.updateOne({ _id: id }, { verificationToken: null });
+    }
+
+    async getIsVerified(id: string) {
+        return User.findById(id).select("isVerified");
+    }
+
     async findById(id: string) {
         return User.findById(id);
     }

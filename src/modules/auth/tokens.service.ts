@@ -1,6 +1,7 @@
 import { User, RefreshToken } from "./auth.models"
 import jwt from "jsonwebtoken"
 import { NotFoundError, BadRequestError, InternalServerError, ConflictError, BadTokenError } from "../../middleware/error";
+import { ObjectId } from "mongoose";
 
 class Token {
     private jwtSecret: string;
@@ -44,7 +45,9 @@ export class RefreshTokenService extends Token {
         return token;
     }
 
-    async replaceToken(userId: string, token: string) {
+    async replaceToken(userId: any) {
+        const user = await User.findById(userId);
+        const token = this.generate(user);
         const refreshToken = await RefreshToken.findOneAndReplace({ user_id: userId }, { token });
         return refreshToken;
     }

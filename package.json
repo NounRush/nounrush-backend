@@ -26,6 +26,7 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^20.11.0",
+    "@types/nodemailer": "^6.4.14",
     "@types/winston": "^2.4.4",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
@@ -35,6 +36,7 @@
     "joi": "^17.11.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.4",
+    "nodemailer": "^6.9.8",
     "ts-node": "^10.9.2",
     "uuid": "^9.0.1",
     "winston": "^3.11.0"
