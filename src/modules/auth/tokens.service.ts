@@ -84,4 +84,15 @@ export class AccessTokenService extends Token {
         const token = this.generate(user, { encrypt: "user" });
         return token;
     }
+
+    async verifyToken(token: string) {
+        const data: any = await this.verify(token);
+        if (data) {
+            const user = await User.findById(data.user._id);
+            if (user) {
+                return user;
+            }
+        }
+        throw new BadTokenError();
+    }
 }

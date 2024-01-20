@@ -4,6 +4,7 @@ import cors from "cors";
 import { config } from "dotenv";
 import database from "./utils/database/db";
 import AuthRouter from "./modules/auth/auth.routes";
+import GameRoomRouter from "./modules/game/game.routes";
 config();
 
 const app = express();
@@ -16,6 +17,8 @@ database.connect();
 
 // Add routes here
 app.use("/auth", AuthRouter);
+app.use('/gamerooms', GameRoomRouter);
+
 
 app.use('*', ErrorHandler.pagenotFound());
 app.use(ErrorHandler.handle());
@@ -31,3 +34,4 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
+export default app;
