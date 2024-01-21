@@ -9,6 +9,10 @@ const GameRoomSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    link: {
+        type: String,
+        required: true
+    },
     currentPlayers: {
         type: Number,
         required: true

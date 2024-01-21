@@ -1,5 +1,6 @@
 import GameRoomRepository from './game.repository';
 import { NotFoundError } from '../../middleware/error';
+import shortid from 'short-uuid';
 
 const gameRoomRepository = new GameRoomRepository()
 
@@ -7,7 +8,11 @@ export default class GameRoomService {
 
 
   async createGameRoom(name: string, maxPlayers: string, rounds: string) {
-    return await gameRoomRepository.createGameRoom(name, maxPlayers, rounds);
+    if (!name || !maxPlayers || !rounds) {
+      throw new NotFoundError('All fields are required');
+    }
+    const gameRoomId = shortid.generate();
+    return await gameRoomRepository.createGameRoom(name, maxPlayers, rounds, gameRoomId);
   }
 
   async getAllGameRooms() {
@@ -20,6 +25,10 @@ export default class GameRoomService {
 
   async getRecentGameRooms(limit: number = 10) {
     return await gameRoomRepository.getRecentGameRooms(limit);
+  }
+
+  async getGameRoomByLink(link: string) {
+    return await gameRoomRepository.findGameRoomByLink(link);
   }
 
   async getGameRoomById(gameRoomId: string) {

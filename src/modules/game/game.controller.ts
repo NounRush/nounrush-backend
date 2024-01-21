@@ -15,6 +15,16 @@ export default class GameRoomController {
     }
   }
 
+  async getGameRoomByLink(req: Request, res: Response) {
+    const { link } = req.params;
+    try {
+      const gameRoom = await gameRoomService.getGameRoomByLink(link);
+      return res.status(200).json(gameRoom);
+    } catch (error: any) {
+      throw new InternalServerError(error.message);
+    }
+  }
+
   async getAllGameRooms(req: Request, res: Response) {
     try {
       const allGameRooms = await gameRoomService.getAllGameRooms();

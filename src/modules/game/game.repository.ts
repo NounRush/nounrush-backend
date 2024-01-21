@@ -1,9 +1,10 @@
 import GameRoom from './game.models';
 
 export default class GameRoomRepository {
-  async createGameRoom(name: string, maxPlayers: string, rounds: string) {
+  async createGameRoom(name: string, maxPlayers: string, rounds: string, id: string) {
     const gameRoom = new GameRoom({
       name,
+      link: id,
       maxPlayers,
       currentPlayers: 0,
       players: [],
@@ -14,6 +15,10 @@ export default class GameRoomRepository {
     return await gameRoom.save();
   }
 
+  async findGameRoomByLink(link: string) {
+    return await GameRoom.findOne({ link });
+  }
+  
   async findGameRoomById(gameRoomId: string) {
     return await GameRoom.findById(gameRoomId);
   }
