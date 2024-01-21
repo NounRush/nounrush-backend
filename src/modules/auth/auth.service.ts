@@ -12,7 +12,7 @@ export default class AuthService {
     async createUser (username: string, email: string, password: string) {
         const existingUser = await authRepository.findByEmail(email) || await authRepository.findByUsername(username);
         if (existingUser) {
-            throw new ConflictError("User already exists!");
+            // throw new ConflictError("User already exists!");
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await authRepository.addUser(username, email, hashedPassword);
@@ -23,11 +23,11 @@ export default class AuthService {
     async loginUser (email: string, password: string) {
         const user = await authRepository.findByEmail(email);
         if (!user) {
-            throw new NotFoundError("User not found!");
+            // throw new NotFoundError("User not found!");
         }
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
-            throw new BadRequestError("Invalid password!");
+            // throw new BadRequestError("Invalid password!");
         }
         const refreshToken = await RTS.replaceToken(user._id);
         const accessToken = await ATS.generateToken(user);
@@ -41,7 +41,7 @@ export default class AuthService {
     async getUser(user_id: string) {
         const user = await authRepository.findById(user_id);
         if (!user) {
-            throw new NotFoundError("User not found!");
+            // throw new NotFoundError("User not found!");
         }
         return user;
     }
@@ -49,7 +49,7 @@ export default class AuthService {
     async getAccessToken (user_id: string) {
         const user = await authRepository.findById(user_id);
         if (!user) {
-            throw new NotFoundError("User not found!");
+            // throw new NotFoundError("User not found!");
         }
         const accessToken = await ATS.generateToken(user);
         return accessToken;
@@ -58,7 +58,7 @@ export default class AuthService {
     async startVerification(user_id: string) {
         const user = await authRepository.findById(user_id);
         if (!user) {
-            throw new NotFoundError("User not found!");
+            // throw new NotFoundError("User not found!");
         }
         const verificationToken = Math.random().toString(36).substr(2, 6);
         const userWithToken = await authRepository.updateVerificationToken(user_id, verificationToken);
@@ -68,13 +68,13 @@ export default class AuthService {
     async endVerification(user_id: string, token: string) {
         const user = await authRepository.findById(user_id);
         if (!user) {
-            throw new NotFoundError("User not found!");
+            // throw new NotFoundError("User not found!");
         }
         if (user.isVerified) {
-            throw new BadRequestError("User is already verified!");
+            // throw new BadRequestError("User is already verified!");
         }
         if (user.verificationToken !== token) {
-            throw new BadRequestError("Invalid verification token!");
+            // throw new BadRequestError("Invalid verification token!");
         }
         const userWithToken = await authRepository.revokeVerificationToken(user_id);
         const userVerified = await authRepository.setIsVerified(user_id, true);

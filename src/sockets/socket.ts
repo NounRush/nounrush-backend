@@ -9,24 +9,33 @@ const io = new Server(server);
 const ATS = new AccessTokenService();
 
 const verifyToken = async (token: string) => {
-  const user = await ATS.verifyToken(token); 
-  return user;
+  try {
+    const user = await ATS.verifyToken(token);
+    return user;
+  } catch (error) {
+    // throw new Error('Authentication error');
+  }
 };
 
-io.use((socket, next) => {
+io.use(async (socket, next) => {
   const token = socket.handshake.auth.token;
-  
+
   if (!token) {
     return next(new Error('Authentication error'));
   }
 
-  const user = verifyToken(token);
-  if (!user) {
+  try {
+    const user = await verifyToken(token);
+
+    if (!user) {
+      return next(new Error('Authentication error'));
+    }
+
+    (socket as any).user = user;
+    next();
+  } catch (error) {
     return next(new Error('Authentication error'));
   }
-
-  (socket as any).user = user;
-  next();
 });
 
 ioEvents(io);

@@ -32,7 +32,7 @@ export async function sendEmail(to: string, subject: string, html: string): Prom
       logger.info('Email sent:' + info.response);
     } catch (error) {
       logger.error('Error sending email:'+ error);
-      throw new InternalServerError("Error sending email");
+      // throw new InternalServerError("Error sending email");
     }
 }
   
@@ -43,7 +43,7 @@ export const processEmail = async function (emailType: string, templateData: obj
       const html = replacePlaceholders(content, templateData);
       return html;
     } catch (error) {
-      throw new InternalServerError("Error processing email");
+      // throw new InternalServerError("Error processing email");
     }
   }
   
@@ -52,7 +52,7 @@ function readFileContent(filePath: string) {
       const content = fs.readFileSync(filePath, 'utf-8');
       return content;
     } catch (error: any) {
-      throw new Error(`Error reading file at path ${filePath}: ${error.message}`);
+      // throw new Error(`Error reading file at path ${filePath}: ${error.message}`);
     }
   }
   

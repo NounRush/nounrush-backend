@@ -9,7 +9,7 @@ export default class GameRoomService {
 
   async createGameRoom(name: string, maxPlayers: string, rounds: string) {
     if (!name || !maxPlayers || !rounds) {
-      throw new NotFoundError('All fields are required');
+      // throw new NotFoundError('All fields are required');
     }
     const gameRoomId = shortid.generate();
     return await gameRoomRepository.createGameRoom(name, maxPlayers, rounds, gameRoomId);
@@ -43,15 +43,17 @@ export default class GameRoomService {
     const gameRoom = await gameRoomRepository.findGameRoomById(gameRoomId);
 
   if (!gameRoom) {
-    throw new NotFoundError('Game room not found');
+    // throw new NotFoundError('Game room not found');
   }
-  if (gameRoom.players.length >= gameRoom.maxPlayers) {
-    gameRoom.status = "playing";
+   if (gameRoom.players.length < gameRoom.maxPlayers) {
+     const newGameRoom = await gameRoomRepository.addPlayerToGameRoom(gameRoomId, playerId);
+     if (newGameRoom?.players.length === gameRoom.maxPlayers) {
+      const newGameRoom = await gameRoomRepository.updateGameRoomStatus(gameRoomId, 'playing');
+      return newGameRoom;
+     }
   } else {
-    gameRoom.players.push(playerId);
-    gameRoom.currentPlayers += 1;
-  }
-    return await gameRoomRepository.addPlayerToGameRoom(gameRoomId, playerId);
+    // throw new Error('Game room is full!');
+    }
   }
 
   async removePlayerFromGameRoom(gameRoomId: string, playerId: string) {

@@ -36,7 +36,7 @@ export class ErrorHandler {
 
   static pagenotFound() {
     return (req: Request, res: Response, next: NextFunction) => {
-      throw new NotFoundError(req.path);
+      // throw new NotFoundError(req.path);
     };
   }
 

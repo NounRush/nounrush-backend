@@ -27,7 +27,7 @@ class Token {
         try {
             return jwt.verify(token, this.jwtSecret);
         } catch (error) {
-            throw new BadTokenError();
+            // throw new BadTokenError();
         }
     }
 }
@@ -63,7 +63,7 @@ export class RefreshTokenService extends Token {
                 }
             }
         }
-        throw new BadTokenError();
+        // throw new BadTokenError();
     }
 
     async destroyToken(user_id: string) {
@@ -93,6 +93,6 @@ export class AccessTokenService extends Token {
                 return user;
             }
         }
-        throw new BadTokenError();
+        // throw new BadTokenError();
     }
 }
