@@ -1,6 +1,5 @@
 import { User, RefreshToken } from "./auth.models"
 import jwt from "jsonwebtoken"
-import { NotFoundError, BadRequestError, InternalServerError, ConflictError, BadTokenError } from "../../middleware/error";
 import { ObjectId } from "mongoose";
 
 class Token {
@@ -27,7 +26,7 @@ class Token {
         try {
             return jwt.verify(token, this.jwtSecret);
         } catch (error) {
-            // throw new BadTokenError();
+            return null
         }
     }
 }
@@ -63,7 +62,7 @@ export class RefreshTokenService extends Token {
                 }
             }
         }
-        // throw new BadTokenError();
+        return null
     }
 
     async destroyToken(user_id: string) {
@@ -93,6 +92,6 @@ export class AccessTokenService extends Token {
                 return user;
             }
         }
-        // throw new BadTokenError();
+        return null
     }
 }
