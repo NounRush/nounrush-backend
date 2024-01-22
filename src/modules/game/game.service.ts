@@ -111,9 +111,9 @@ export default class GameRoomService {
    *
    * @param {string} gameRoomId - the ID of the game room
    * @param {string} playerId - the ID of the player to be removed
-   * @return {Promise<void>} a promise indicating the success of the removal
+   * @return {Promise<any | null>} a promise indicating the success of the removal
    */
-  async removePlayerFromGameRoom(gameRoomId: string, playerId: string) {
+  async removePlayerFromGameRoom(gameRoomId: string, playerId: string): Promise<any | null> {
     return await gameRoomRepository.removePlayerFromGameRoom(gameRoomId, playerId);
   }
 }
