@@ -82,6 +82,10 @@ export default class GameRoomService {
     return await gameRoomRepository.updateGameRoomStatus(gameRoomId, newStatus);
   }
 
+  async getPlayersInGameRoom(gameRoomId: string) {
+    return await gameRoomRepository.getPlayersInGameRoom(gameRoomId);
+  }
+
   /**
    * Add a player to a game room if the room exists and has available space.
    *

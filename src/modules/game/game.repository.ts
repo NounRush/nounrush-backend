@@ -43,6 +43,10 @@ export default class GameRoomRepository {
     return await GameRoom.findByIdAndUpdate(gameRoomId, { status: newStatus }, { new: true });
   }
 
+  async getPlayersInGameRoom(gameRoomId: string) {
+    return await GameRoom.findById(gameRoomId).populate('players');
+  }
+
 
 async addPlayerToGameRoom(gameRoomId: string, playerId: any) {
     return await GameRoom.findByIdAndUpdate(
