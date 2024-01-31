@@ -5,7 +5,6 @@ const gameRoomService = new GameRoomService();
 
 export const ioEvents = async (io: any) => {
     io.on("connection", (socket: any) => {
-
         socket.on("joinRoom", async (data: any) => {
             const { roomId, playerId } = data;
             socket.join(roomId);

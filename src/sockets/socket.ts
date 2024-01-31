@@ -13,7 +13,7 @@ const verifyToken = async (token: string) => {
     const user = await ATS.verifyToken(token);
     return user;
   } catch (error) {
-    // throw new Error('Authentication error');
+    throw new Error('Authentication error');
   }
 };
 
