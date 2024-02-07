@@ -99,12 +99,17 @@ export default class GameRoomService {
   if (!gameRoom) {
     return null
   }
+
+if (gameRoom.status !== 'waiting') {
+  return null
+}
    if (gameRoom.players.length < gameRoom.maxPlayers) {
      const newGameRoom = await gameRoomRepository.addPlayerToGameRoom(gameRoomId, playerId);
      if (newGameRoom?.players.length === gameRoom.maxPlayers) {
       const newGameRoom = await gameRoomRepository.updateGameRoomStatus(gameRoomId, 'playing');
       return newGameRoom;
      }
+     return newGameRoom;
   } else {
     return null
     }

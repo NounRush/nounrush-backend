@@ -48,15 +48,20 @@ export default class GameRoomRepository {
   }
 
 
-async addPlayerToGameRoom(gameRoomId: string, playerId: any) {
-    return await GameRoom.findByIdAndUpdate(
-        gameRoomId,
-        {
-          $push: { players: playerId },
-          $inc: { currentPlayers: 1 },
-        },
-        { new: true }
-      );
+  async addPlayerToGameRoom(gameRoomId: string, playerId: any) {
+    const gameRoom = await GameRoom.findOne({_id: gameRoomId});
+    if (!gameRoom) {
+        return null
+    }
+    const max = gameRoom.maxPlayers
+    if (gameRoom.players.length === max) {
+        return null
+    }
+    if (gameRoom.players.length > max) {
+        gameRoom.players.push(playerId);
+        await gameRoom.save();
+        return gameRoom
+    }
 }
 
   async removePlayerFromGameRoom(gameRoomId: string, playerId: string) {
