@@ -39,6 +39,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.4",
     "nodemailer": "^6.9.8",
+    "redis": "^4.6.13",
     "short-uuid": "^4.2.2",
     "socket.io": "^4.7.4",
     "ts-node": "^10.9.2",

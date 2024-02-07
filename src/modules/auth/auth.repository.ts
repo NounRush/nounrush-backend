@@ -1,4 +1,6 @@
+import logger from "../../utils/logging/logger";
 import { User } from "./auth.models";
+import mongoose from "mongoose";
 
 export default class AuthRepository {
 
@@ -11,7 +13,7 @@ export default class AuthRepository {
         return User.findById(id).select("password");
     }
 
-    async updateVerificationToken(id: string, verificationToken: string) {
+    async updateVerificationToken(id: string, verificationToken: string | null) {
         return User.updateOne({ _id: id }, { verificationToken });  
     }
 
@@ -35,6 +37,30 @@ export default class AuthRepository {
         return User.findById(id);
     }
 
+     updateVerificationAndIsVerified = async (userId: string) => {
+        // Working with transactions in Mongoose for fun
+        const session = await mongoose.startSession();
+        session.startTransaction();    
+        try {
+            const updatedUser = await User.findOneAndUpdate(
+                { _id: userId },
+                { $set: { verificationToken: null, isVerified: true } },
+                { session, new: true } // Use { new: true } to return the updated document
+            ).exec();
+    
+            await session.commitTransaction();
+            session.endSession();
+
+            return updatedUser;
+
+        } catch (error) {
+            await session.abortTransaction();
+            session.endSession();
+    
+            logger.error('Transaction aborted:', error);
+            throw error; // Rethrow the error to be handled by the caller
+        }
+    };
     async findByEmail(email: string) {
         return User.findOne({ email });
     }

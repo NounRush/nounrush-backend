@@ -2,6 +2,7 @@ import AuthRepository from "./auth.repository";
 import bcrypt from "bcrypt"
 import { NotFoundError, BadRequestError, InternalServerError, ConflictError } from "../../middleware/error";
 import { RefreshTokenService, AccessTokenService } from "./tokens.service";
+import redis from "../../utils/cache/redis";
 import { sendVerificationEmail } from "../../utils/emails/emails";
 
 const authRepository = new AuthRepository();
@@ -102,31 +103,28 @@ export default class AuthService {
             return null
         }
         const verificationToken = Math.random().toString(36).substr(2, 6);
-        const userWithToken = await authRepository.updateVerificationToken(user_id, verificationToken);
-        await sendVerificationEmail(userWithToken);
-        return userWithToken;
+        const redisToken = redis.set(user_id, verificationToken, { "EX": 600 });
+        if (!redisToken) {
+            return null;
+        }
+        await sendVerificationEmail(user);
+        return true;
     }
 
-    /**
-     * Asynchronously ends the verification process for a user.
-     *
-     * @param {string} user_id - The ID of the user to end verification for.
-     * @param {string} token - The verification token to end the process with.
-     * @return {Promise<User | null>} The user after verification, or null if the process fails.
-     */
-    async endVerification(user_id: string, token: string) {
+async endVerification(user_id: string, token: string) {
+    try {
         const user = await authRepository.findById(user_id);
         if (!user) {
-            return null
+            return null;
         }
-        if (user.isVerified) {
-            return null
+        const redisToken = await redis.get(user_id);
+        if (redisToken !== token) {
+            return null;
         }
-        if (user.verificationToken !== token) {
-            return null
-        }
-        const userWithToken = await authRepository.revokeVerificationToken(user_id);
-        const userVerified = await authRepository.setIsVerified(user_id, true);
-        return userVerified;
+        const userWithToken = await authRepository.updateVerificationAndIsVerified(user_id);
+        return userWithToken;
+    } catch (error) {
+        throw error;
     }
+}
 }
