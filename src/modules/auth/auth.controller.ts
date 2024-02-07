@@ -13,7 +13,7 @@ export default class AuthController {
             throw new BadRequestError(error.details[0].message);
         }
         const { username, email, password } = data;
-        const user = await authService.createUser(username, email, password);
+        const user = await authService.createUser({username, email, password});
         if (!user) {
             throw new ConflictError("User already exists");
         }
@@ -27,7 +27,7 @@ export default class AuthController {
             throw new BadRequestError(error.details[0].message);
         }
         const { email, password } = data;
-        const accessToken = await authService.loginUser(email, password);
+        const accessToken = await authService.loginUser({email, password});
         if (!accessToken) {
             throw new InternalServerError("Login failed");
         }

@@ -20,15 +20,16 @@ export default class AuthService {
      * @return {Promise<User | null>} the newly created user if successful, 
      * or null if the user already exists
      */
-    async createUser (username: string, email: string, password: string) {
+    async createUser (user: { username: string, email: string, password: string }) {
+        const { username, email, password } = user;
         const existingUser = await authRepository.findByEmail(email) || await authRepository.findByUsername(username);
         if (existingUser) {
             return null;
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await authRepository.addUser(username, email, hashedPassword);
-        const refreshToken = await RTS.generateToken(user._id);
-        return user;
+        const newUser = await authRepository.addUser(username, email, hashedPassword);
+        const refreshToken = await RTS.generateToken(newUser._id);
+        return newUser;
     }
 
     /**
@@ -38,12 +39,12 @@ export default class AuthService {
      * @param {string} password - the user's password
      * @return {Promise<string | null>} the access token for the logged in user or null if login fails
      */
-    async loginUser (email: string, password: string) {
-        const user = await authRepository.findByEmail(email);
+    async loginUser (credentials: {email: string, password: string}) {
+        const user = await authRepository.findByEmail(credentials.email);
         if (!user) {
             return null;
         }
-        const passwordMatch = await bcrypt.compare(password, user.password);
+        const passwordMatch = await bcrypt.compare(credentials.password, user.password);
         if (!passwordMatch) {
             return null;
         }
